@@ -22,6 +22,7 @@ body {
     overflow: hidden;
 }
 
+
 .header::before {
     content: '';
     position: absolute;
@@ -68,12 +69,13 @@ body {
 }
 
 .header p {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    font-weight: 300;
-    color: #cbd5e1;
+    font-size: 1.8rem; /* Aumentato da 1.2rem a 1.8rem per maggiore visibilità */
+    opacity: 1; /* Aumentato da 0.9 a 1 per massima visibilità */
+    font-weight: 500; /* Aumentato da 400 a 500 per testo ancora più spesso */
+    color: #f1f5f9; /* Cambiato a un bianco-grigio ancora più chiaro */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* Ombra più pronunciata */
+    margin-top: 0.5rem; /* Aggiunto spazio sopra per migliore spaziatura */
 }
-
 /* Navigation */
 .nav-container {
     display: flex;
