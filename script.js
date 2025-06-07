@@ -25,6 +25,15 @@ function showPage(pageId) {
     });
 }
 
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = 'service_ap1k4xn'; // Il tuo Service ID
+const EMAILJS_TEMPLATE_ID_TOURNAMENT = 'template_k9h3o2m'; // Template per tornei
+const EMAILJS_TEMPLATE_ID_DINNER = 'template_cu73535'; // Template per cene
+const EMAILJS_PUBLIC_KEY = 'YRs5iRA2Id2iGd7u9'; // La tua Public Key
+
+// Initialize EmailJS
+emailjs.init(EMAILJS_PUBLIC_KEY);
+
 // Form handling
 document.addEventListener('DOMContentLoaded', function() {
     // Tournament form
@@ -50,11 +59,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Simulate form submission
-            showNotification(`Prenotazione torneo ricevuta!\n\nSquadra: ${teamName}\nGiocatori: ${player1}, ${player2}\nTelefono: ${phone}\n\nTi contatteremo presto per confermare la prenotazione e le modalità di pagamento.`, 'success');
+            // Prepare email data
+            const emailData = {
+                to_email: 'bsbiliardo@gmail.com',
+                team_name: teamName,
+                player1: player1,
+                player2: player2,
+                phone: phone,
+                date: new Date().toLocaleDateString('it-IT'),
+                time: new Date().toLocaleTimeString('it-IT')
+            };
             
-            // Reset form
-            tournamentForm.reset();
+            // Send email via EmailJS
+            sendTournamentEmail(emailData, tournamentForm);
         });
     }
     
@@ -81,14 +98,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Simulate form submission
-            showNotification(`Prenotazione cena ricevuta!\n\nNome: ${name} ${surname}\nTelefono: ${phone}\nNumero persone: ${guests}\n\nTi contatteremo presto per confermare la prenotazione.`, 'success');
+            // Prepare email data
+            const emailData = {
+                to_email: 'bsbiliardo@gmail.com',
+                name: name,
+                surname: surname,
+                phone: phone,
+                guests: guests,
+                date: new Date().toLocaleDateString('it-IT'),
+                time: new Date().toLocaleTimeString('it-IT')
+            };
             
-            // Reset form
-            dinnerForm.reset();
+            // Send email via EmailJS
+            sendDinnerEmail(emailData, dinnerForm);
         });
     }
 });
+
+// Function to send tournament email
+function sendTournamentEmail(emailData, form) {
+    const submitButton = form.querySelector('.submit-btn');
+    addLoadingState(submitButton);
+    
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_TOURNAMENT, emailData)
+        .then(function(response) {
+            console.log('Email inviata con successo!', response.status, response.text);
+            showNotification(`Prenotazione torneo inviata con successo!\n\nSquadra: ${emailData.team_name}\nGiocatori: ${emailData.player1}, ${emailData.player2}\nTelefono: ${emailData.phone}\n\nRiceverai una conferma all'indirizzo email fornito.`, 'success');
+            form.reset();
+        })
+        .catch(function(error) {
+            console.error('Errore nell\'invio dell\'email:', error);
+            showNotification('Errore nell\'invio della prenotazione. Riprova più tardi o contattaci direttamente.', 'error');
+        })
+        .finally(function() {
+            resetLoadingState(submitButton);
+        });
+}
+
+// Function to send dinner email
+function sendDinnerEmail(emailData, form) {
+    const submitButton = form.querySelector('.submit-btn');
+    addLoadingState(submitButton);
+    
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_DINNER, emailData)
+        .then(function(response) {
+            console.log('Email inviata con successo!', response.status, response.text);
+            showNotification(`Prenotazione cena inviata con successo!\n\nNome: ${emailData.name} ${emailData.surname}\nTelefono: ${emailData.phone}\nNumero persone: ${emailData.guests}\n\nRiceverai una conferma all'indirizzo email fornito.`, 'success');
+            form.reset();
+        })
+        .catch(function(error) {
+            console.error('Errore nell\'invio dell\'email:', error);
+            showNotification('Errore nell\'invio della prenotazione. Riprova più tardi o contattaci direttamente.', 'error');
+        })
+        .finally(function() {
+            resetLoadingState(submitButton);
+        });
+}
 
 // Enhanced form validation
 function validatePhone(phone) {
@@ -213,28 +278,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Add loading animation to forms
 function addLoadingState(button) {
-    const originalText = button.textContent;
+    button.originalText = button.textContent;
     button.textContent = 'Invio in corso...';
     button.disabled = true;
     button.style.opacity = '0.7';
-    
-    setTimeout(() => {
-        button.textContent = originalText;
-        button.disabled = false;
-        button.style.opacity = '1';
-    }, 2000);
 }
 
-// Enhanced submit button handling
-document.addEventListener('DOMContentLoaded', function() {
-    const submitButtons = document.querySelectorAll('.submit-btn');
-    
-    submitButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            addLoadingState(this);
-        });
-    });
-});
+// Reset loading state
+function resetLoadingState(button) {
+    button.textContent = button.originalText || 'Invia';
+    button.disabled = false;
+    button.style.opacity = '1';
+}
 
 // Add animation on scroll
 function animateOnScroll() {
