@@ -123,7 +123,7 @@ function sendTournamentEmail(emailData, form) {
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_TOURNAMENT, emailData)
         .then(function(response) {
             console.log('Email inviata con successo!', response.status, response.text);
-            showNotification(`Prenotazione torneo inviata con successo!\n\nSquadra: ${emailData.team_name}\nGiocatori: ${emailData.player1}, ${emailData.player2}\nTelefono: ${emailData.phone}\n\nRiceverai una conferma all'indirizzo email fornito.`, 'success');
+            showNotification(`Prenotazione torneo inviata con successo!\n\nSquadra: ${emailData.team_name}\nGiocatori: ${emailData.player1}, ${emailData.player2}\nTelefono: ${emailData.phone}\n\n`, 'success');
             form.reset();
         })
         .catch(function(error) {
@@ -143,7 +143,7 @@ function sendDinnerEmail(emailData, form) {
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID_DINNER, emailData)
         .then(function(response) {
             console.log('Email inviata con successo!', response.status, response.text);
-            showNotification(`Prenotazione cena inviata con successo!\n\nNome: ${emailData.name} ${emailData.surname}\nTelefono: ${emailData.phone}\nNumero persone: ${emailData.guests}\n\nRiceverai una conferma all'indirizzo email fornito.`, 'success');
+            showNotification(`Prenotazione cena inviata con successo!\n\nNome: ${emailData.name} ${emailData.surname}\nTelefono: ${emailData.phone}\nNumero persone: ${emailData.guests}\n\n`, 'success');
             form.reset();
         })
         .catch(function(error) {
